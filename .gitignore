@@ -1,0 +1,9 @@
+# Testing folder
+Downloads/
+
+# Test files
+photo.png
+test file.stem.py
+test shutil.move().py
+testing.py
+test_mkdir().py
