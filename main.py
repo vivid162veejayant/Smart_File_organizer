@@ -17,6 +17,13 @@ categories = {
 folder = Path(r"E:/")
 
 for file in folder.rglob("*"):
+
+    if file.name == "MediaID.bin":
+        continue
+
+    if file.name == "9d3b12eeccefcda85cf634e317a1\\$shtdwn$.req":
+        continue
+    
     if file.is_file():
 
         if file.parent.name in categories:
