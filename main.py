@@ -13,74 +13,88 @@ categories = {
     "Others": []
 }
 
-folder = Path("Downloads")
+folder = Path(r"E:/")
 
 total_moved = 0
 
-category_count = {
-    "Images": 0,
-    "Videos": 0,
-    "Documents": 0,
-    "Audio": 0,
-    "Archives": 0,
-    "Scripts": 0,
-    "Executables": 0,
-    "Others": 0
-}
+category_count = {category: 0 for category in categories}
 
-for file in folder.iterdir():
-    if file.is_file():
-        file_extension = file.suffix.lower()
-        moved = False
 
-        for category, extensions in categories.items():
-            if file_extension in extensions:
-                destination_folder = folder / category
-                destination_folder.mkdir(exist_ok=True)
+for file in folder.rglob("*"):
 
-                source = file
-                destination = destination_folder / file.name
+    # Skip anything that isn't a file
+    if not file.is_file():
+        continue
 
-                # Duplicate protection with automatic renaming
-                if destination.exists():
-                    counter = 1
+    # Skip files already inside organizer folders
+    if file.parent.name in categories:
+        continue
 
-                    while destination.exists():
-                        new_name = file.stem + "_" + str(counter) + file.suffix
-                        destination = destination_folder / new_name
-                        counter += 1
+    file_extension = file.suffix.lower()
+    moved = False
 
-                print("Moving from:", source)
-                print("Moving to:", destination)
+    for category, extensions in categories.items():
 
-                shutil.move(str(source), str(destination))
+        if file_extension in extensions:
+
+            destination_folder = folder / category
+            destination_folder.mkdir(exist_ok=True)
+
+            destination = destination_folder / file.name
+
+            # Duplicate protection
+            counter = 1
+            while destination.exists():
+                new_name = f"{file.stem}_{counter}{file.suffix}"
+                destination = destination_folder / new_name
+                counter += 1
+
+            try:
+                print(f"Moving from: {file}")
+                print(f"Moving to:   {destination}")
+
+                shutil.move(str(file), str(destination))
 
                 total_moved += 1
                 category_count[category] += 1
 
-                moved = True
-                break
+            except (PermissionError, OSError) as e:
+                print(f"Skipped: {file}")
+                print(f"Reason : {e}")
 
-        if not moved:
-            others_folder = folder / "Others"
-            others_folder.mkdir(exist_ok=True)
+            moved = True
+            break
 
-            destination = others_folder / file.name
+    if not moved:
 
-            if destination.exists():
-                counter = 1
+        others_folder = folder / "Others"
+        others_folder.mkdir(exist_ok=True)
 
-                while destination.exists():
-                    new_name = file.stem + "_" + str(counter) + file.suffix
-                    destination = others_folder / new_name
-                    counter += 1
+        destination = others_folder / file.name
+
+        counter = 1
+        while destination.exists():
+            new_name = f"{file.stem}_{counter}{file.suffix}"
+            destination = others_folder / new_name
+            counter += 1
+
+        try:
+            print(f"Moving from: {file}")
+            print(f"Moving to:   {destination}")
 
             shutil.move(str(file), str(destination))
 
-            
-            
-print("\n==============Summary==============")
+            total_moved += 1
+            category_count["Others"] += 1
+
+        except (PermissionError, OSError) as e:
+            print(f"Skipped: {file}")
+            print(f"Reason : {e}")
+
+
+print("\n============== Summary ==============")
 
 for category, count in category_count.items():
     print(f"{category}: {count} files moved")
-    print(f"\nTotal files moved: {total_moved}")
+
+print(f"\nTotal files moved: {total_moved}")
