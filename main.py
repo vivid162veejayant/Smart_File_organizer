@@ -14,10 +14,20 @@ categories = {
     "Others": []  # For files that don't match any of the above categories
 }
 
-folder = Path(r"D:\Veejayant Personal\Coding\Projects\Python Projects\Smart File Organizer\Testing\Downloads")
+folder = Path(r"E:/")
 
-for file in folder.iterdir():
+for file in folder.rglob("*"):
     if file.is_file():
+
+        if file.parent.name in categories:
+            continue
+
+        if file.parent.name == "Others":
+            continue
+
+        file_extension = file.suffix.lower()
+        ...
+
         file_extension = file.suffix.lower()  # Get the file extension in lowercase
         moved = False  # Flag to check if the file has been moved
 
