@@ -1,5 +1,6 @@
 from pathlib import Path
 import shutil
+import hashlib
 
 # Dictionaries for extensions and their corresponding folder names
 categories = {
@@ -19,6 +20,17 @@ total_moved = 0
 
 category_count = {category: 0 for category in categories}
 
+hash_memory = set()
+
+
+def get_hash(file_path):
+    with open(file_path, "rb") as file:
+        data = file.read()
+
+    hasher = hashlib.sha256()
+    hasher.update(data)
+    return hasher.hexdigest()
+
 
 for file in folder.rglob("*"):
 
@@ -29,6 +41,14 @@ for file in folder.rglob("*"):
     # Skip files already inside organizer folders
     if file.parent.name in categories:
         continue
+
+    file_hash = get_hash(file)
+
+    if file_hash in hash_memory:
+        print(f"Duplicate Detected! {file}")
+        continue
+
+    hash_memory.add(file_hash)
 
     file_extension = file.suffix.lower()
     moved = False
@@ -42,7 +62,6 @@ for file in folder.rglob("*"):
 
             destination = destination_folder / file.name
 
-            # Duplicate protection
             counter = 1
             while destination.exists():
                 new_name = f"{file.stem}_{counter}{file.suffix}"
@@ -90,7 +109,6 @@ for file in folder.rglob("*"):
         except (PermissionError, OSError) as e:
             print(f"Skipped: {file}")
             print(f"Reason : {e}")
-
 
 print("\n============== Summary ==============")
 
