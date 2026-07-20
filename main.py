@@ -44,6 +44,15 @@ for file in folder.rglob("*"):
 
     file_hash = get_hash(file)
 
+
+    try:
+        file_hash = get_hash(file)
+    except (PermissionError, OSError) as e:
+        print(f"Skipped: {file}")
+        print(f"Reason : {e}")
+        continue
+
+
     if file_hash in hash_memory:
         print(f"Duplicate Detected! {file}")
         continue
@@ -77,7 +86,7 @@ for file in folder.rglob("*"):
                 total_moved += 1
                 category_count[category] += 1
 
-            except (PermissionError, OSError) as e:
+            except (PermissionError, OSError, WindowsError) as e:
                 print(f"Skipped: {file}")
                 print(f"Reason : {e}")
 
