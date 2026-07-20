@@ -83,7 +83,7 @@ for file in folder.rglob("*"):
                 total_moved += 1
                 category_count[category] += 1
 
-            except (PermissionError, OSError, WindowsError) as e:
+            except (PermissionError, OSError) as e:
                 print(f"Skipped: {file}")
                 print(f"Reason : {e}")
 
