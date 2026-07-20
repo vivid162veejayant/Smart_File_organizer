@@ -42,9 +42,6 @@ for file in folder.rglob("*"):
     if file.parent.name in categories:
         continue
 
-    file_hash = get_hash(file)
-
-
     try:
         file_hash = get_hash(file)
     except (PermissionError, OSError) as e:
