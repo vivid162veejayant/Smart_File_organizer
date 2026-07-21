@@ -38,14 +38,20 @@ hash_memory = set()
 
 # Read The File's Bytes:
 
-
 def get_hash(file_path):
-    with open(file_path, "rb") as file:
-        data = file.read()
-
     hasher = hashlib.sha256()
-    hasher.update(data)
+
+    with open(file_path, "rb") as file:
+        chunk = file.read(4096)
+
+        while chunk:
+            hasher.update(chunk)
+            chunk = file.read(4096)
+
     return hasher.hexdigest()
+
+   
+
 
 # Main Loop For Organizing Files
 
