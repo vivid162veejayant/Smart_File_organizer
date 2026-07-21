@@ -14,7 +14,9 @@ categories = {
     "Others": []
 }
 
-folder = Path(r"E:/")
+folder = Path()
+
+
 
 total_moved = 0
 
