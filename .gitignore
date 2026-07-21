@@ -8,3 +8,4 @@ test shutil.move().py
 testing.py
 test_mkdir().py
 test hashlib.py
+test.py

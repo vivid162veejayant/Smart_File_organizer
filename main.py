@@ -139,7 +139,6 @@ for file in folder.rglob("*"):
         except (PermissionError, OSError) as e:
             print(f"Skipped: {file}")
             print(f"Reason : {e}")
-
 print("\n============== Summary ==============")
 
 for category, count in category_count.items():
