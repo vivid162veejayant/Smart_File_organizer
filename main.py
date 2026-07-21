@@ -4,7 +4,7 @@ import hashlib
 
 # Dictionaries for extensions and their corresponding folder names
 categories = {
-    "Images": [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".svg"],
+    "Images": [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".svg", ".webp"],
     "Videos": [".mp4", ".mkv", ".avi", ".mov", ".flv", ".wmv", ".webm"],
     "Documents": [".pdf", ".doc", ".docx", ".txt", ".xls", ".xlsx", ".ppt", ".pptx"],
     "Audio": [".mp3", ".wav", ".aac", ".flac", ".ogg", ".m4a"],
@@ -14,8 +14,19 @@ categories = {
     "Others": []
 }
 
-folder = Path()
+# User Folder Input Section
 
+folder_location = input("Enter The File Location Specified: ")
+folder = Path(folder_location)
+if folder.exists():
+    print("Checking in:", folder)
+else:
+    print("Wrong input! Please give a valid path.")
+folder = Path(folder_location)
+while not folder.exists():
+    print("Wrong input! Please give a valid path.")
+    folder_location = input("Enter a valid path: ")
+    folder = Path(folder_location)
 
 
 total_moved = 0
@@ -25,6 +36,9 @@ category_count = {category: 0 for category in categories}
 hash_memory = set()
 
 
+# Read The File's Bytes:
+
+
 def get_hash(file_path):
     with open(file_path, "rb") as file:
         data = file.read()
@@ -32,6 +46,8 @@ def get_hash(file_path):
     hasher = hashlib.sha256()
     hasher.update(data)
     return hasher.hexdigest()
+
+# Main Loop For Organizing Files
 
 
 for file in folder.rglob("*"):
